@@ -96,9 +96,15 @@ const Chat = () => {
     if (searchTerm === "") {
       setFilteredUsers([]);
     } else {
-      const filtered = users.filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) // Changed to use name instead of email
+      const filtered = users.filter(
+        (user) =>
+          user.name &&
+          user.name
+            .toLowerCase()
+            .trim()
+            .includes(searchTerm.toLowerCase().trim())
       );
+      console.log("Filtered Users:", filtered); // Log filtered users to see the result
       setFilteredUsers(filtered);
     }
   }, [searchTerm, users]);
@@ -118,7 +124,6 @@ const Chat = () => {
     <div className="flex flex-col h-screen bg-gray-900 text-white">
       {/* Header */}
       <Header onLogout={handleLogout} /> {/* Use the Header component here */}
-
       {/* Main Chat Area */}
       <div className="flex flex-1 md:flex-row">
         {/* Sidebar */}
@@ -134,9 +139,9 @@ const Chat = () => {
           {/* Search Suggestions (For small screens only) */}
           {searchTerm && filteredUsers.length > 0 && (
             <div className="bg-gray-700 rounded mt-2 md:hidden">
-              {filteredUsers.map((user) => (
+              {filteredUsers.map((user, i) => (
                 <div
-                  key={user.uid}
+                  key={i}
                   className="p-2 cursor-pointer hover:bg-gray-600"
                   onClick={() => setSelectedUser(user)}
                 >
@@ -148,9 +153,9 @@ const Chat = () => {
 
           {/* Full User List (For large screens only) */}
           <div className="hidden md:block mt-4">
-            {users.map((user) => (
+            {users.map((user, i) => (
               <div
-                key={user.uid}
+                key={i}
                 className={`p-2 cursor-pointer hover:bg-gray-600 ${
                   selectedUser?.uid === user.uid ? "bg-blue-600" : "bg-gray-700"
                 }`}
@@ -175,7 +180,8 @@ const Chat = () => {
                 <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white">
                   {selectedUser.name[0].toUpperCase()}
                 </div>
-                <div className="text-lg font-bold">{selectedUser.name}</div> {/* Display name here */}
+                <div className="text-lg font-bold">{selectedUser.name}</div>{" "}
+                {/* Display name here */}
               </div>
 
               {/* Messages */}
